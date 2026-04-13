@@ -14,7 +14,7 @@ uv pip install \
   --python-platform linux \
   --python-version 3.11 \
   --only-binary :all: \
-  flask mangum unidecode
+  flask mangum asgiref unidecode
 
 cp -r "$PROJECT_ROOT/src/gcorg_resolver" "$BUILD_DIR/gcorg_resolver"
 cp -r "$PROJECT_ROOT/data" "$BUILD_DIR/data"
