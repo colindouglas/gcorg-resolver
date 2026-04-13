@@ -3,7 +3,7 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [project]
-name = "gc-org-resolver"
+name = "gcorg-resolver"
 version = "0.0.1"
 description = "HTTP API that resolves Government of Canada organization names"
 requires-python = ">=3.11"
@@ -22,7 +22,7 @@ dev = [
 ]
 
 [tool.hatch.build.targets.wheel]
-packages = ["src/gc_org_resolver"]
+packages = ["src/gcorg_resolver"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

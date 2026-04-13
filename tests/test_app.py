@@ -1,6 +1,6 @@
 import pytest
 
-from gc_org_resolver.app import create_app
+from gcorg_resolver.app import create_app
 
 
 @pytest.fixture()

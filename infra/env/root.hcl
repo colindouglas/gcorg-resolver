@@ -17,7 +17,7 @@ remote_state {
   }
   config = {
     encrypt      = true
-    bucket       = "gc-org-resolver-${local.vars.inputs.env}-tfstate"
+    bucket       = "gcorg-resolver-${local.vars.inputs.env}-tfstate"
     use_lockfile = true
     region       = "ca-central-1"
     key          = "${path_relative_to_include()}/terraform.tfstate"

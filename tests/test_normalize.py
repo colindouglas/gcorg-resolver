@@ -1,6 +1,6 @@
 import pytest
 
-from gc_org_resolver.normalize import normalize
+from gcorg_resolver.normalize import normalize
 
 
 @pytest.mark.parametrize(

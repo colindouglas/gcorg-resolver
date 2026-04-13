@@ -1,4 +1,4 @@
-from gc_org_resolver.load_reference_standard import load_reference_standard, lookup
+from gcorg_resolver.load_reference_standard import load_reference_standard, lookup
 
 
 def test_load_gcorgs_refstd_returns_many_orgs():

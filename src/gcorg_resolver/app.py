@@ -2,8 +2,8 @@
 
 from flask import Flask, jsonify, request
 
-from gc_org_resolver.load_reference_standard import lookup
-from gc_org_resolver.resolver import resolve
+from gcorg_resolver.load_reference_standard import lookup
+from gcorg_resolver.resolver import resolve
 
 # Limit in a single API call
 MAX_NAMES = 1000

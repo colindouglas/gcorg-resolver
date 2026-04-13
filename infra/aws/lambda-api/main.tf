@@ -1,5 +1,5 @@
 locals {
-  function_name = coalesce(local.function_name, "gc-org-resolver-${var.env}")
+  function_name = coalesce(local.function_name, "gcorg-resolver-${var.env}")
 }
 
 data "aws_iam_policy_document" "lambda_assume" {
@@ -30,7 +30,7 @@ resource "aws_cloudwatch_log_group" "lambda" {
 resource "aws_lambda_function" "api" {
   function_name    = local.function_name
   role             = aws_iam_role.lambda.arn
-  handler          = "gc_org_resolver.lambda_handler.handler"
+  handler          = "gcorg_resolver.lambda_handler.handler"
   runtime          = "python3.11"
   timeout          = 30
   memory_size      = 256

@@ -16,7 +16,7 @@ uv pip install \
   --only-binary :all: \
   flask mangum unidecode
 
-cp -r "$PROJECT_ROOT/src/gc_org_resolver" "$BUILD_DIR/gc_org_resolver"
+cp -r "$PROJECT_ROOT/src/gcorg_resolver" "$BUILD_DIR/gcorg_resolver"
 cp -r "$PROJECT_ROOT/data" "$BUILD_DIR/data"
 
 cd "$BUILD_DIR"

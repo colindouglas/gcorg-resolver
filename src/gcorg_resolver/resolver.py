@@ -12,7 +12,7 @@ from difflib import get_close_matches
 from functools import cache
 from pathlib import Path
 
-from gc_org_resolver.normalize import normalize
+from gcorg_resolver.normalize import normalize
 
 ALIASES_PATH = (
     Path(__file__).resolve().parents[2] / "data" / "gc_org_aliases.csv"

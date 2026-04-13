@@ -1,4 +1,4 @@
-from gc_org_resolver.resolver import resolve
+from gcorg_resolver.resolver import resolve
 
 
 def test_resolves_canonical_english_name():

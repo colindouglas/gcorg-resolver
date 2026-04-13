@@ -1,4 +1,4 @@
-# gc-org-resolver
+# gcorg-resolver
 
 Resolves free-text Government of Canada organization names to a canonical `gc_orgID`. Takes messy strings like `"CRA"`, `"Bibliothèque et Archives Canada"`, or email addresses like `"user@inspection.gc.ca"` and returns the numeric ID from the [GC Organization Names and Codes dataset](https://open.canada.ca/data/en/dataset/57180b36-3428-4a7f-afe3-2161a6b44ec5/resource/3faaafb4-00e2-4303-947d-ac786b62559f) on open.canada.ca.
 
