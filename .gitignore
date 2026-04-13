@@ -18,3 +18,10 @@ models/
 .DS_Store
 .vscode/
 .idea/
+
+infra/.build/
+infra/**/.terraform/
+infra/**/.terragrunt-cache/
+*.tfstate
+*.tfstate.backup
+.terraform.lock.hcl
