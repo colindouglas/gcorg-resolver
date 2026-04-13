@@ -28,14 +28,15 @@ resource "aws_cloudwatch_log_group" "lambda" {
 }
 
 resource "aws_lambda_function" "api" {
-  function_name    = local.function_name
-  role             = aws_iam_role.lambda.arn
-  handler          = "gcorg_resolver.lambda_handler.handler"
-  runtime          = "python3.11"
-  timeout          = 30
-  memory_size      = 256
-  filename         = var.lambda_zip_path
-  source_code_hash = filebase64sha256(var.lambda_zip_path)
+  function_name                  = local.function_name
+  role                           = aws_iam_role.lambda.arn
+  handler                        = "gcorg_resolver.lambda_handler.handler"
+  runtime                        = "python3.11"
+  timeout                        = 30
+  memory_size                    = 256
+  filename                       = var.lambda_zip_path
+  source_code_hash               = filebase64sha256(var.lambda_zip_path)
+  reserved_concurrent_executions = var.lambda_max_concurrency
 
   environment {
     variables = {
@@ -58,6 +59,11 @@ resource "aws_apigatewayv2_stage" "default" {
   api_id      = aws_apigatewayv2_api.api.id
   name        = "$default"
   auto_deploy = true
+
+  default_route_settings {
+    throttling_burst_limit = var.api_throttle_burst
+    throttling_rate_limit  = var.api_throttle_rate
+  }
 }
 
 resource "aws_apigatewayv2_integration" "lambda" {

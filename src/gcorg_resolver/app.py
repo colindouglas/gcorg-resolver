@@ -7,10 +7,12 @@ from gcorg_resolver.resolver import resolve
 
 # Limit in a single API call
 MAX_NAMES = 1000
+MAX_CONTENT_LENGTH = 512 * 1024  # 512 KB
 
 
 def create_app() -> Flask:
     app = Flask(__name__)
+    app.config["MAX_CONTENT_LENGTH"] = MAX_CONTENT_LENGTH
 
     # POST /resolve
     #
