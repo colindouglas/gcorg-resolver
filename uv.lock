@@ -50,7 +50,7 @@ wheels = [
 ]
 
 [[package]]
-name = "gc-org-resolver"
+name = "gcorg-resolver"
 version = "0.0.1"
 source = { editable = "." }
 dependencies = [
