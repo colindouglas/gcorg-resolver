@@ -17,13 +17,13 @@ import sys
 from pathlib import Path
 
 # Allow running from the repo root or from data/ directly.
-_HERE = Path(__file__).resolve().parent
-sys.path.insert(0, str(_HERE.parent / "src"))
+HERE = Path(__file__).resolve().parent
+sys.path.insert(0, str(HERE.parent / "src"))
 
 from gcorg_resolver.normalize import normalize  # noqa: E402
 
-CONCORDANCE_PATH = _HERE / "gc_concordance.csv"
-ALIASES_PATH = _HERE / "gc_org_aliases.csv"
+CONCORDANCE_PATH = HERE / "gc_concordance.csv"
+ALIASES_PATH = HERE / "gc_org_aliases.csv"
 
 # Fields that potentially contain aliases that help us resolve names
 ALIAS_FIELDS = [
@@ -36,19 +36,17 @@ ALIAS_FIELDS = [
 ]
 
 # Some short abbreivations correspond to to more than one organization.
-# For these known conflicts, we intentionally choose what we feel is 
+# For these known conflicts, we intentionally choose what we feel is
 # the best match.
 
 KNOWN_CONFLICTS = {
     # Registrar of the Supreme Court of Canada (2287)
     # Service correctionnel Canada (2255)
-    "scc": 2255,  
-
-    # Registraire de la Cour suprême du Canada (2287) 
+    "scc": 2255,
+    # Registraire de la Cour suprême du Canada (2287)
     # Correctional Service Canada (2255)
     "csc": 2255,
-
-    # Agence spatiale canadienne (2251) 
+    # Agence spatiale canadienne (2251)
     # Accessibility Standards Canada (2319)
     "asc": 2251,
 }
@@ -117,4 +115,6 @@ if __name__ == "__main__":
         writer.writerow(["name", "gc_orgID"])
         writer.writerows(all_rows)
 
-    print(f"{len(existing_rows)} existing aliases, {len(new_rows)} new — {len(all_rows)} total written to {ALIASES_PATH}")
+    print(
+        f"{len(existing_rows)} existing aliases, {len(new_rows)} new — {len(all_rows)} total written to {ALIASES_PATH}"
+    )

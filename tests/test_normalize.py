@@ -20,7 +20,7 @@ from gcorg_resolver.normalize import normalize
         ),
         (
             "Canada Revenue Agency / Agence du revenu du Canada",
-            "canada revenue agency agence revenu",
+            "revenue agency agence revenu",
         ),
     ],
 )
@@ -43,8 +43,8 @@ def test_office_prefix_is_stripped():
 
 
 def test_agency_typos_are_fixed():
-    assert normalize("Canada Revenue Agnecy") == "canada revenue agency"
-    assert normalize("Canadian Space Ageny") == "canadian space agency"
+    assert normalize("Canada Revenue Agnecy") == "revenue agency"
+    assert normalize("Canadian Space Ageny") == "space agency"
 
 
 def test_department_typos_are_fixed():
@@ -63,8 +63,21 @@ def test_empty_string():
     assert normalize("") == ""
 
 
-def test_bare_canada_is_not_stripped():
-    assert normalize("Canada") == "canada"
+def test_bare_canada_is_stripped():
+    assert normalize("Canada") == ""
+
+
+def test_canadian_adjective_is_stripped():
+    assert normalize("Canadian Heritage") == "heritage"
+    assert (
+        normalize("Agence canadienne d'inspection des aliments")
+        == "agence inspection aliments"
+    )
+    assert normalize("Forces canadiennes") == "forces"
+
+
+def test_canada_inside_domain_is_preserved():
+    assert normalize("fintrac-canafe.canada.ca") == "fintrac-canafe.canada.ca"
 
 
 def test_trailing_inc_is_stripped():

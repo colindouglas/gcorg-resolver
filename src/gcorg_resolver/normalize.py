@@ -9,22 +9,35 @@ Pipeline steps (in order):
 2. Strip diacritics (Latin-ASCII via unidecode)
 3. If the input is an email address, extract the registrable domain
 4. Strip trailing abbreviation dots (e.g. "St." -> "St")
-5. Remove "of Canada" / "du Canada" / "au Canada" and trailing "Canada"
-6. Strip "Office of the" / "Bureau du/de la/d'" prefixes
-7. Remove any trailing "Canada" revealed by step 6
+5. Remove "Canada" as a standalone token (anywhere in the string),
+   including "of Canada" / "du Canada" / "au Canada"
+6. Remove English/French adjective forms: "Canadian", "canadien(ne)(s)"
+7. Strip "Office of the" / "Bureau du/de la/d'" prefixes
 8. Strip trailing "Inc" / "Inc."
 9. Drop prepositions and articles (the, of, and, du, de, des, etc.)
 10. Replace non-critical punctuation with a space
 11. Collapse whitespace
 12. Fix common agency/department typos
+
+"Canada" inside domain names like ``fintrac-canafe.canada.ca``
 """
 
 import re
+
 from unidecode import unidecode
 
-CANADA_ANY = re.compile(r"(of canada)|(au canada)|(du canada)|( canada )|( canada$)")
+# Match "canada" as a standalone token anywhere in the string, optionally
+# preceded by "of " / "au " / "du ". Token boundaries are space or
+# string-boundary — crucially NOT the regex \b, because that would also
+# match "canada" inside domains like ``fintrac-canafe.canada.ca``.
+CANADA_ANY = re.compile(r"(?:^|\s)(?:of |au |du )?canada(?=\s|$)")
+
+# Match English and French adjective forms on a token boundary:
+# canadian, canadien, canadiens, canadienne, canadiennes. We don't have
+# to worry about accents because we've already stripped them
+CANADIAN_ADJ = re.compile(r"(?:^|\s)canad(?:ian|ien|iens|ienne|iennes)(?=\s|$)")
+
 OFFICE_PREFIX = re.compile(r"(office of the)|(bureau du)|(bureau de la)|(bureau d')")
-CANADA_TRAILING = re.compile(r"( of canada$)|( au canada$)|( du canada$)|( canada$)")
 INC_TRAILING = re.compile(r"\s+inc\.?$")
 
 
@@ -57,6 +70,7 @@ TYPO_DEPARTMENT = re.compile(r"deprtment|departmant|deparment|depatment")
 EMAIL = re.compile(r"^[^@\s]+@(.+)$")
 GC_SUFFIXES = (".gc.ca", ".canada.ca")
 
+
 def extract_domain(s: str) -> str:
     m = EMAIL.match(s)
     if not m:
@@ -76,8 +90,8 @@ def normalize(s: str) -> str:
     o = extract_domain(o)
     o = ABBREV_DOTS.sub("", o)
     o = CANADA_ANY.sub(" ", o)
+    o = CANADIAN_ADJ.sub(" ", o)
     o = OFFICE_PREFIX.sub("", o)
-    o = CANADA_TRAILING.sub("", o)
     o = INC_TRAILING.sub("", o)
     o = PREPOSITIONS.sub(r"\1", o)
     o = PUNCTUATION.sub(" ", o)
