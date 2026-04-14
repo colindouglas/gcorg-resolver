@@ -53,7 +53,11 @@ def resolve(name: str) -> int | None:
     query = normalize(name)
     index = _alias_index()
     if query in index:
-        return index[query]
+        # We set gc_orgID to 0 for ambiguous aliases that shouldn't be matched
+        if index[query] == 0:
+            return None
+        else:
+            return index[query]
     if len(query) >= FUZZY_MATCH_MIN_LENGTH:
         matches = get_close_matches(
             query, index.keys(), n=1, cutoff=FUZZY_MATCH_MIN_RATIO
