@@ -1,10 +1,14 @@
 # GC Organization Name Resolution API
 
-Resolves free-text Government of Canada organization names to a canonical `gc_orgID`. Takes messy strings like `"CRA"`, `"Bibliothèque et Archives Canada"`, or email addresses like `"user@inspection.gc.ca"` and returns the numeric ID from the [GC Organization Names and Codes dataset](https://open.canada.ca/data/en/dataset/57180b36-3428-4a7f-afe3-2161a6b44ec5/resource/3faaafb4-00e2-4303-947d-ac786b62559f) on open.canada.ca.
+Resolves free-text Government of Canada organization names to a canonical `gc_orgID`. 
+Takes messy strings like `"CRA"`, `"Bibliothèque et Archives Canada"`, or email 
+addresses like `"user@inspection.gc.ca"` and returns the numeric ID from the 
+[GC Organization Names and Codes dataset](https://open.canada.ca/data/en/dataset/57180b36-3428-4a7f-afe3-2161a6b44ec5/resource/3faaafb4-00e2-4303-947d-ac786b62559f) on open.canada.ca.
 
 ## Usage
 
-For now, the API can be found at https://gcorgs.donairpoutine.com. It is rate limited to 50 requests per second and no more than 1000 names in one POST.
+For now, the API can be found at https://gcorgs.donairpoutine.com. It is rate limited to
+50 requests per second and no more than 1000 names in one POST.
 
 ### POST /resolve
 
@@ -28,7 +32,11 @@ curl -X POST https://gcorgs.donairpoutine.com/resolve \
 
 ### GET /resolve and GET /name
 
-Two simplified endpoints intended for use with Excel's `WEBSERVICE()` function and Google Sheet's `IMPORTDATA()` function.  `GET /resolve` returns the `gc_orgID` as plain text, or an empty string on no match. The result can be passed to `GET /name` to resolve to a canonical name. The two-step process encourages users to store the unique `gc_orgID` alongside the name of the department.
+Two simplified endpoints intended for use with Excel's `WEBSERVICE()` and Google Sheet's
+`IMPORTDATA()` functions.  `GET /resolve` returns the `gc_orgID` as plain text, or an 
+empty string on no match. The result can be passed to `GET /name` to resolve to a 
+canonical name. The two-step process encourages users to store the unique `gc_orgID` 
+alongside the name of the department.
 
 ```
 GET /resolve?name=Agriculture
@@ -41,9 +49,11 @@ GET /name?gc_orgID=2222&lang=fr
 -> Agriculture et Agroalimentaire Canada
 ```
 
-#### Excel:
+### Excel
 
-Note that the `WEBSERVICE()` function only works in the desktop version of Excel for Windows. **It does not work in Excel for Mac.**. This is a limitation of Excel, not a limitation of this project.
+You can use this API from Excel to automatically resolve organizations in a workbook 
+without having to use PowerQuery or any external tools. Simply cut and paste the 
+formulas below into your workbook.
 
 ```
 # Returns the gc_orgID of the name in cell A1
@@ -56,10 +66,14 @@ Note that the `WEBSERVICE()` function only works in the desktop version of Excel
 =WEBSERVICE("https://gcorgs.donairpoutine.com/name?lang=fr&gc_orgID=" & A2)    
 ```
 
-#### Google Sheets
+Note that the `=WEBSERVICE()` function only works in Excel on Windows. **It does not 
+work in Excel for Mac.** This is a limitation of Excel, not a limitation of this 
+project.
 
-The same API calls work in Google Sheets, using the `IMPORTDATA` function and providing
-a delimiter that doesn't exist in any canonical organization names.
+### Google Sheets
+
+The same API calls work in Google Sheets, using the `=IMPORTDATA()` function and 
+providing a delimiter that doesn't exist in any canonical organization names.
 
 ```
 # Returns the gc_orgID of the name in cell A1
