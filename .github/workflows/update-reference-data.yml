@@ -1,0 +1,52 @@
+# Checks the GC Organizations Reference Standard for upstream changes.
+# If gc_concordance.csv has changed,  regenerates gc_org_aliases.csv
+# and commits both files back to the branch.
+#
+# Source dataset:
+#   https://open.canada.ca/data/en/dataset/57180b36-3428-4a7f-afe3-2161a6b44ec5
+
+name: Update reference data
+
+on:
+  schedule:
+    - cron: "0 6 * * *"  # Every day at 06:00 UTC
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+
+      - name: Download reference standard
+        run: uv run data/download_reference_standard.py
+
+      - name: Check for changes to reference standard
+        run: |
+          if git diff --quiet data/gc_concordance.csv; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Update aliases
+        if: steps.check.outputs.changed == 'true'
+        run: uv run data/update_aliases.py
+
+      - name: Commit and push
+        if: steps.check.outputs.changed == 'true'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add data/gc_concordance.csv data/gc_org_aliases.csv
+          git commit -m "chore(data): update GC organizations reference standard"
+          git push
