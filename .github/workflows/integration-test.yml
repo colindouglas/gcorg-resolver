@@ -9,7 +9,7 @@ on:
       base_url:
         description: "API base URL to test"
         required: false
-        default: "https://gcorgs.donairpoutine.com"
+        default: ${{ vars.API_BASE_URL_PROD }}
   schedule:
     - cron: "30 6 * * *"  # 30 min after the daily data update
 
@@ -24,9 +24,9 @@ jobs:
           if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
             echo "base_url=${{ inputs.base_url }}" >> "$GITHUB_OUTPUT"
           elif [[ "${{ github.event.workflow_run.name }}" == "Terraform apply (dev)" ]]; then
-            echo "base_url=https://dev.gcorgs.donairpoutine.com" >> "$GITHUB_OUTPUT"
+            echo "base_url=${{ vars.API_BASE_URL_DEV }}" >> "$GITHUB_OUTPUT"
           else
-            echo "base_url=https://gcorgs.donairpoutine.com" >> "$GITHUB_OUTPUT"
+            echo "base_url=${{ vars.API_BASE_URL_PROD }}" >> "$GITHUB_OUTPUT"
           fi
 
       - name: Run integration tests
