@@ -9,7 +9,7 @@ terraform {
   }
 
   backend "s3" {
-    bucket       = "gcorg-resolver-dev-tfstate"
+    bucket       = "gcorg-resolver-dev-tfstate-a7f3k9"
     key          = "bootstrap/terraform.tfstate"
     region       = "ca-central-1"
     encrypt      = true
