@@ -4,7 +4,7 @@
 # is delegated via NS records.
 
 resource "aws_route53_zone" "gcorgs" {
-  name = "gcorgs.cdssandbox.cyz"
+  name = "gcorgs.cdssandbox.xyz"
 }
 
 
