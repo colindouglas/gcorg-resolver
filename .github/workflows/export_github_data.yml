@@ -4,6 +4,9 @@ on:
   schedule:
     - cron: "20 7 * * *"
 
+permissions:
+  contents: read
+
 jobs:
   export-data:
     runs-on: ubuntu-latest
