@@ -192,6 +192,26 @@ resource "aws_iam_policy" "apply_prod" {
   policy      = data.aws_iam_policy_document.apply_prod.json
 }
 
+# --- Weekly cost report role -----------------------------------------------
+
+data "aws_iam_policy_document" "cost_report_read" {
+  statement {
+    sid = "CostExplorerRead"
+    actions = [
+      "ce:GetCostAndUsage",
+      "ce:GetDimensionValues",
+      "ce:GetTags",
+    ]
+    resources = ["*"]
+  }
+}
+
+resource "aws_iam_policy" "cost_report_read" {
+  name        = "gcorg-resolver-cost-report-read"
+  description = "Read-only Cost Explorer permissions for weekly account cost reports."
+  policy      = data.aws_iam_policy_document.cost_report_read.json
+}
+
 # --- OIDC provider + roles --------------------------------------------------
 
 module "github_oidc" {
@@ -229,6 +249,13 @@ module "github_oidc" {
       claim = "ref:refs/heads/main"
       policy_arns = [
         aws_iam_policy.apply_prod.arn,
+      ]
+    },
+    {
+      name  = "Billing-ReadOnly"
+      claim = "ref:refs/heads/main"
+      policy_arns = [
+        aws_iam_policy.cost_report_read.arn,
       ]
     },
   ]
