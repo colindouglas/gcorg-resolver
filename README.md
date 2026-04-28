@@ -7,8 +7,8 @@ addresses like `"user@inspection.gc.ca"` and returns the numeric ID from the
 
 ## Usage
 
-For now, the dev API environment can be found at https://gcorgs.cdssandbox.xyz. It 
-is rate limited to 50 requests per second and no more than 1000 names in one POST.
+For now, the API  can be found at https://gcorgs.cdssandbox.xyz. It is rate limited to 
+50 requests per second and no more than 1000 names in one POST.
 
 ### POST /resolve
 
