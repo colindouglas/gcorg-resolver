@@ -87,9 +87,10 @@ if __name__ == "__main__":
 
     start_date, end_date = calculate_last_week()
     raw_amount, unit = get_weekly_cost(start_date, end_date)
+    display_start_date = datetime.fromisoformat(start_date).strftime("%b %-d, %Y")
     display_end_date = (
         datetime.fromisoformat(end_date).date() - timedelta(days=1)
-    ).isoformat()
+    ).strftime("%b %-d, %Y")
 
     try:
         formatted_amount = f"{float(raw_amount):.2f}"
@@ -98,7 +99,7 @@ if __name__ == "__main__":
 
     message = (
         f":money_with_wings: SD&R Weekly AWS Spend \n"
-        f":calendar: {start_date} to {display_end_date} (inclusive)\n"
+        f":calendar: {display_start_date} to {display_end_date}\n"
         f":moneybag: ${formatted_amount} {unit}"
     )
 

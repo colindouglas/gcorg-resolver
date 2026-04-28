@@ -12,11 +12,13 @@ fi
 echo "Testing $BASE_URL"
 
 # GET /health - just check it returns 200
+echo "Testing /health endpoint..."
 status=$(curl -s -o /dev/null -w "%{http_code}" "$BASE_URL/health")
 [[ "$status" == "200" ]]
 echo "PASS  GET /health"
 
 # POST /resolve - batch with known match, acronym match, and no-match
+echo "Testing /resolve POST endpoint..."
 result=$(curl -sf -X POST "$BASE_URL/resolve" \
   -H 'Content-Type: application/json' \
   -d '{"names": ["Bibliothèque et Archives Canada", "CRA", "Department of Unicorns"]}')
@@ -26,21 +28,25 @@ result=$(curl -sf -X POST "$BASE_URL/resolve" \
 echo "PASS  POST /resolve"
 
 # GET /resolve - plain text org ID
+echo "Testing /resolve GET endpoint..."
 got=$(curl -sf "$BASE_URL/resolve?name=Agriculture")
 [[ "$got" == "2222" ]]
 echo "PASS  GET /resolve?name=Agriculture"
 
 # GET /name - English
+echo "Testing /name GET endpoint (English)..."
 got=$(curl -sf "$BASE_URL/name?gc_orgID=2222&lang=en")
 [[ "$got" == "Agriculture and Agri-Food Canada" ]]
 echo "PASS  GET /name?gc_orgID=2222&lang=en"
 
 # GET /name - French
+echo "Testing /name GET endpoint (French)..."
 got=$(curl -sf "$BASE_URL/name?gc_orgID=2222&lang=fr")
 [[ "$got" == "Agriculture et Agroalimentaire Canada" ]]
 echo "PASS  GET /name?gc_orgID=2222&lang=fr"
 
 # GET /.well-known/security.txt - must return text/plain
+echo "Testing /.well-known/security.txt endpoint..."
 content_type=$(curl -s -o /dev/null -w "%{content_type}" "$BASE_URL/.well-known/security.txt")
 [[ "$content_type" == "text/plain" ]]
 echo "PASS  GET /.well-known/security.txt"

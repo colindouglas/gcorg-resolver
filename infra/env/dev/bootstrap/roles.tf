@@ -1,5 +1,6 @@
 locals {
-  state_bucket_arn = "arn:aws:s3:::${var.state_bucket}"
+  DEV_STATE_BUCKET_ARN  = "arn:aws:s3:::${var.state_bucket_dev}"
+  PROD_STATE_BUCKET_ARN = "arn:aws:s3:::${var.state_bucket_prod}"
 }
 
 # --- Dev plan role ----------------------------------------------------------
@@ -8,7 +9,7 @@ data "aws_iam_policy_document" "plan_state_dev" {
   statement {
     sid       = "ListStateBucket"
     actions   = ["s3:ListBucket"]
-    resources = [local.state_bucket_arn]
+    resources = [local.DEV_STATE_BUCKET_ARN]
   }
 
   statement {
@@ -19,7 +20,7 @@ data "aws_iam_policy_document" "plan_state_dev" {
       "s3:DeleteObject",
     ]
     # dev state lives at lambda-api/* (no env prefix — existing key)
-    resources = ["${local.state_bucket_arn}/lambda-api*"]
+    resources = ["${local.DEV_STATE_BUCKET_ARN}/lambda-api*"]
   }
 }
 
@@ -36,8 +37,8 @@ data "aws_iam_policy_document" "apply_dev" {
     sid     = "StateBucketDev"
     actions = ["s3:*"]
     resources = [
-      local.state_bucket_arn,
-      "${local.state_bucket_arn}/lambda-api*",
+      local.DEV_STATE_BUCKET_ARN,
+      "${local.DEV_STATE_BUCKET_ARN}/lambda-api*",
     ]
   }
 
@@ -103,7 +104,7 @@ data "aws_iam_policy_document" "plan_state_prod" {
   statement {
     sid       = "ListStateBucket"
     actions   = ["s3:ListBucket"]
-    resources = [local.state_bucket_arn]
+    resources = [local.PROD_STATE_BUCKET_ARN]
   }
 
   statement {
@@ -113,8 +114,8 @@ data "aws_iam_policy_document" "plan_state_prod" {
       "s3:PutObject",
       "s3:DeleteObject",
     ]
-    # prod state lives at prod/*
-    resources = ["${local.state_bucket_arn}/prod*"]
+    # prod state lives at prod/lambda-api/*
+    resources = ["${local.PROD_STATE_BUCKET_ARN}/prod/lambda-api*"]
   }
 }
 
@@ -131,8 +132,8 @@ data "aws_iam_policy_document" "apply_prod" {
     sid     = "StateBucketProd"
     actions = ["s3:*"]
     resources = [
-      local.state_bucket_arn,
-      "${local.state_bucket_arn}/prod*",
+      local.PROD_STATE_BUCKET_ARN,
+      "${local.PROD_STATE_BUCKET_ARN}/prod/lambda-api*",
     ]
   }
 
@@ -192,6 +193,26 @@ resource "aws_iam_policy" "apply_prod" {
   policy      = data.aws_iam_policy_document.apply_prod.json
 }
 
+# --- Weekly cost report role -----------------------------------------------
+
+data "aws_iam_policy_document" "cost_report_read" {
+  statement {
+    sid = "CostExplorerRead"
+    actions = [
+      "ce:GetCostAndUsage",
+      "ce:GetDimensionValues",
+      "ce:GetTags",
+    ]
+    resources = ["*"]
+  }
+}
+
+resource "aws_iam_policy" "cost_report_read" {
+  name        = "gcorg-resolver-cost-report-read"
+  description = "Read-only Cost Explorer permissions for weekly account cost reports."
+  policy      = data.aws_iam_policy_document.cost_report_read.json
+}
+
 # --- OIDC provider + roles --------------------------------------------------
 
 module "github_oidc" {
@@ -229,6 +250,13 @@ module "github_oidc" {
       claim = "ref:refs/heads/main"
       policy_arns = [
         aws_iam_policy.apply_prod.arn,
+      ]
+    },
+    {
+      name  = "Billing-ReadOnly"
+      claim = "ref:refs/heads/main"
+      policy_arns = [
+        aws_iam_policy.cost_report_read.arn,
       ]
     },
   ]

@@ -45,12 +45,18 @@ jobs:
         env:
           BASE_URL: ${{ steps.url.outputs.base_url }}
         run: |
-          if bash tests/integration_api.sh; then
+          set -o pipefail
+          bash tests/integration_api.sh 2>&1 | tee /tmp/integration_api.log
+          status=${PIPESTATUS[0]}
+
+          if [[ "$status" -eq 0 ]]; then
             echo "TEST_FAILED=false" >> $GITHUB_ENV
           else
             echo "TEST_FAILED=true" >> $GITHUB_ENV
-            exit 1
+            echo "Integration script failed with exit code $status"
           fi
+
+          exit "$status"
 
       - name: Slack message if integration testing fails in prod
         if: ${{ env.TEST_FAILED == 'true' && env.IS_PROD == 'true' }}
