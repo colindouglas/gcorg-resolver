@@ -159,4 +159,28 @@ def create_app() -> Flask:
             mimetype="text/plain",
         )
 
+    @app.route("/")
+    def send_index():
+        return send_from_directory(
+            os.path.join(app.root_path, "static"),
+            "index_en.html",
+            mimetype="text/html",
+        )
+
+    @app.route("/en")
+    def send_index_en():
+        return send_from_directory(
+            os.path.join(app.root_path, "static"),
+            "index_en.html",
+            mimetype="text/html",
+        )
+
+    @app.route("/fr")
+    def send_index_fr():
+        return send_from_directory(
+            os.path.join(app.root_path, "static"),
+            "index_fr.html",
+            mimetype="text/html",
+        )
+
     return app
