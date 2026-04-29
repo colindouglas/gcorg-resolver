@@ -16,6 +16,23 @@ def create_app() -> Flask:
     app = Flask(__name__)
     app.config["MAX_CONTENT_LENGTH"] = MAX_CONTENT_LENGTH
 
+    # CORS: this API is intended to be consumed from arbitrary origins
+    # (Excel, Google Sheets, third-party web pages, etc.), so we allow any
+    # origin. We answer the browser's OPTIONS preflight ourselves rather
+    # than pulling in flask-cors as a dependency.
+    @app.after_request
+    def add_cors_headers(response):
+        response.headers["Access-Control-Allow-Origin"] = "*"
+        response.headers["Access-Control-Allow-Methods"] = "GET, POST, OPTIONS"
+        response.headers["Access-Control-Allow-Headers"] = "Content-Type"
+        response.headers["Access-Control-Max-Age"] = "86400"
+        return response
+
+    @app.route("/<path:_path>", methods=["OPTIONS"])
+    @app.route("/", methods=["OPTIONS"])
+    def cors_preflight(_path=""):
+        return ("", 204)
+
     # POST /resolve
     #
     # Accepts a JSON object with a "names" key containing a list of
