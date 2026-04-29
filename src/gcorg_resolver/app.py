@@ -200,4 +200,20 @@ def create_app() -> Flask:
             mimetype="text/html",
         )
 
+    @app.route("/examples/suggest")
+    def send_example_suggest():
+        return send_from_directory(
+            os.path.join(app.root_path, "static"),
+            "example_suggest.html",
+            mimetype="text/html",
+        )
+
+    @app.route("/examples/infer")
+    def send_example_infer():
+        return send_from_directory(
+            os.path.join(app.root_path, "static"),
+            "example_infer.html",
+            mimetype="text/html",
+        )
+
     return app

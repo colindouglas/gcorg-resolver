@@ -50,6 +50,7 @@ GET /name?gc_orgID=2222&lang=en
 GET /name?gc_orgID=2222&lang=fr
 -> Agriculture et Agroalimentaire Canada
 ```
+## Examples
 
 ### Excel
 
@@ -69,7 +70,7 @@ formulas below into your workbook.
 ```
 
 Note that the `=WEBSERVICE()` function only works in Excel on Windows. **It does not 
-work in Excel for Mac.** This is a limitation of Excel, not a limitation of this 
+work in Excel for Mac.** This is a limitation of Excel for Mac, not a limitation of this 
 project.
 
 ### Google Sheets
