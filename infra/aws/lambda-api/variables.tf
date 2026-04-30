@@ -36,3 +36,8 @@ variable "api_throttle_burst" {
   type        = number
   default     = 100
 }
+
+variable "billing_tag_value" {
+  description = "The value used to track billing costs."
+  type        = string
+}
