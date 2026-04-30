@@ -78,6 +78,8 @@ def create_app() -> Flask:
                         "gc_orgID": org.gc_orgID,
                         "harmonized_name": org.harmonized_name,
                         "nom_harmonise": org.nom_harmonise,
+                        "abbreviation": org.abbreviation,
+                        "abreviation": org.abreviation,
                         "matched": True,
                     }
                 )
@@ -88,6 +90,8 @@ def create_app() -> Flask:
                         "gc_orgID": None,
                         "harmonized_name": None,
                         "nom_harmonise": None,
+                        "abbreviation": None,
+                        "abreviation": None,
                         "matched": False,
                     }
                 )
