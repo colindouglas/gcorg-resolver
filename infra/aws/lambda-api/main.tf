@@ -1,5 +1,10 @@
 locals {
   function_name = coalesce(var.function_name, "gcorg-resolver-${var.env}")
+
+  common_tags = {
+    CostCentre = var.billing_tag_value
+    Terraform  = true
+  }
 }
 
 data "aws_iam_policy_document" "lambda_assume" {
@@ -15,6 +20,7 @@ data "aws_iam_policy_document" "lambda_assume" {
 resource "aws_iam_role" "lambda" {
   name               = "${local.function_name}-role"
   assume_role_policy = data.aws_iam_policy_document.lambda_assume.json
+  tags               = local.common_tags
 }
 
 resource "aws_iam_role_policy_attachment" "lambda_basic" {
@@ -25,6 +31,7 @@ resource "aws_iam_role_policy_attachment" "lambda_basic" {
 resource "aws_cloudwatch_log_group" "lambda" {
   name              = "/aws/lambda/${local.function_name}"
   retention_in_days = var.log_retention_days
+  tags              = local.common_tags
 }
 
 resource "aws_lambda_function" "api" {
@@ -44,6 +51,8 @@ resource "aws_lambda_function" "api" {
     }
   }
 
+  tags = local.common_tags
+
   depends_on = [
     aws_cloudwatch_log_group.lambda,
     aws_iam_role_policy_attachment.lambda_basic,
@@ -53,12 +62,14 @@ resource "aws_lambda_function" "api" {
 resource "aws_apigatewayv2_api" "api" {
   name          = local.function_name
   protocol_type = "HTTP"
+  tags          = local.common_tags
 }
 
 resource "aws_apigatewayv2_stage" "default" {
   api_id      = aws_apigatewayv2_api.api.id
   name        = "$default"
   auto_deploy = true
+  tags        = local.common_tags
 
   default_route_settings {
     throttling_burst_limit = var.api_throttle_burst

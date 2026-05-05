@@ -33,6 +33,7 @@ provider "aws" {
 module "lambda_api" {
   source = "../../aws/lambda-api"
 
-  env             = var.env
-  lambda_zip_path = "${path.root}/../../.build/lambda.zip"
+  env               = var.env
+  lambda_zip_path   = "${path.root}/../../.build/lambda.zip"
+  billing_tag_value = var.billing_tag_value
 }
