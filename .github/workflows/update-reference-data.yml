@@ -31,6 +31,7 @@ jobs:
         run: uv run data/download_reference_standard.py
 
       - name: Check for changes to reference standard
+        id: check
         run: |
           if git diff --quiet data/gc_concordance.csv; then
             echo "changed=false" >> "$GITHUB_OUTPUT"
